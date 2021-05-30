@@ -2,22 +2,33 @@
 
 function solveEquation(a, b, c) {
 
-  let D = b ** 2 - 4 * a * c;
+  const discriminant = b ** 2 - 4 * a * c;
 
-  if (D < 0) {
+  if (discriminant < 0) {
     return [];
-  } else if (D === 0) {
-    return [(- b + Math.sqrt(D)) / 2 * a];
-  } else if (D > 0) {
-    return [(- b + Math.sqrt(D)) / 2 * a, (- b - Math.sqrt(D)) / 2 * a];
+  } else if (discriminant === 0) {
+    return [(- b + Math.sqrt(discriminant)) / 2 * a];
+  } else if (discriminant > 0) {
+    return [(- b + Math.sqrt(discriminant)) / 2 * a, (- b - Math.sqrt(discriminant)) / 2 * a];
   }
 }
 
 function calculateTotalMortgage(percent, contribution, amount, date) {
-  let loanBody = +amount - Number(contribution);
-  let creditPeriod = (date.getFullYear() - new Date().getFullYear()) * 12 + date.getMonth() - new Date().getMonth();
-  let monthPercent = Number(percent) / 12 / 100;
-  let paymentPerMonth = loanBody * (monthPercent + monthPercent / (((1 + monthPercent) ** creditPeriod) - 1));
-  let totalAmount = Number((paymentPerMonth * creditPeriod).toFixed(2));
-  return totalAmount;
+  const calculateTotalMortgageName = ["percent", "contribution", "amount"];
+
+  if (isNaN(percent) === true || percent === "" || percent === " ") {
+    return (`Параметр "${calculateTotalMortgageName[0]}" содержит неправильное значение`);
+  } else if (isNaN(contribution) === true || contribution === "" || contribution === " ") {
+    return (`Параметр "${calculateTotalMortgageName[1]}" содержит неправильное значение`);
+  } else if (isNaN(amount) === true || amount === "" || amount === " "){
+    return (`Параметр "${calculateTotalMortgageName[2]}" содержит неправильное значение`);
+  } else {
+    const loanBody = +amount - Number(contribution);
+    const creditPeriod = (date.getFullYear() - new Date().getFullYear()) * 12 + date.getMonth() - new Date().getMonth();
+    const monthPercent = Number(percent) / 12 / 100;
+    const paymentPerMonth = loanBody * (monthPercent + monthPercent / (((1 + monthPercent) ** creditPeriod) - 1));
+    const totalAmount = Number((paymentPerMonth * creditPeriod).toFixed(2));
+
+    return totalAmount;
+  }
 }
