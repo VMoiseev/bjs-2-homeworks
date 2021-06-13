@@ -47,7 +47,7 @@ class Magazine extends PrintEditionItem {
 class Book extends PrintEditionItem {
 
   constructor(author, name, releaseDate, pagesCount) {
-    super(name, releaseDate, pagesCount);
+    super(author, name, releaseDate, pagesCount);
     this.type = "book";
     this.author = author;
   }
@@ -142,80 +142,103 @@ console.log("Количество книг после выдачи: " + library.
 // Задача № 3
 
 class Student {
-    constructor (name) {
-      this.name = name;
-    }
+  constructor (name) {
+    this.name = name;
+    this.marks = [];
+  }
   
-    addGrade(mark, subject) {
-      if(mark > 0 && mark <= 5) {
-        if (this.marks === undefined) {
-          this.marks = [];
-          if (this.marks[subject] === undefined) {
-            this.marks[subject] = [mark];
-          } else {
-            this.marks[subject].push(mark);
-          }
-        } 
-      } else {
-        console.log('Ошибка, оценка должна быть числом от 1 до 5');
-      }
-    }   
-      
-    getAverageBySubject(subject) {
-      if (this.marks[subject] === undefined) {
-        console.log('Несуществующий предмет')
-      } else {
-        let sum = 0;
-      
-        for(let i = 0; i < this.marks[subject].length; i++) {
-          sum += this.marks[subject][i];
+  addGrade(subject, mark) {   //Тесты Jasmine проходит если строку написать addGrade(mark, subject)
+    if(mark > 0 && mark <= 5) {
+      if (this.marks === undefined) {
+        this.marks = [];
+        if (this.marks[subject] === undefined) {
+          this.marks[subject] = [mark];
+        } else {
+          this.marks[subject].push(mark);
         }
-                  
-        console.log(`Средний балл по предмету ${subject}: ` + (sum / this.marks[subject].length));
-        return sum / this.marks[subject].length;
-      }
-    }
-  
-    getTotalAverage() {
-      if(this.marks.length === 0) {
-        console.log('Ошибка, отсутствуют оценки для расчета');
       } else {
-        let sum = 0;
-        let count = 0;
-        for (let item in this.marks) {
-          sum += this.getAverageBySubject(item);
-          count += 1;
+        if (this.marks[subject] === undefined) {
+          this.marks[subject] = [mark];
+        } else {
+          this.marks[subject].push(mark);
         }
-  
-        console.log("Средний балл по всем предметам: " + (sum / count));
-        return sum / count;    
       }
+    } else {
+      console.log('Ошибка, оценка должна быть числом от 1 до 5');
     }
-  
-    getAverage() {
-      let count = 0;
+  } 
+      
+  getAverageBySubject(subject) {
+    if (this.marks[subject] === undefined) {
+      console.log('Несуществующий предмет')
+    } else {
       let sum = 0;
-      for(let subject in this.marks) {
-        sum += this.getAverageBySubject(subject);
-        count++;
+      
+      for(let i = 0; i < this.marks[subject].length; i++) {
+        sum += this.marks[subject][i];
       }
-      if(count > 0) {
-        let avg = sum/count.toFixed(2);
-        console.log(`Средний балл по всем предметам ${avg}`);
-        return avg;
-      } else {
-        console.log("Нет оценок");
-        return null;
-      }
-    }
-  
-    exclude(reason) {
-      if(this.subject !== undefined) { 
-        delete this.subject;
-      }
-      if(this.marks !== undefined) { 
-        delete this.marks;
-      }
-      this.excluded = reason;
+      let averageScore = sum / this.marks[subject].length;
+      console.log(`Средний балл по предмету: ${averageScore}`);
+      return averageScore;
     }
   }
+  
+  getTotalAverage() {
+    if(this.marks.length === 0) {
+      console.log('Ошибка, отсутствуют оценки для расчета');
+    } else {
+      let sum = 0;
+      let count = 0;
+      for (let item in this.marks) {
+        sum += this.getAverageBySubject(item);
+        count += 1;
+      }
+      let averageMarkInTheSubject = (sum / count).toFixed(2);
+
+      console.log(`Средний балл по всем предметам: ${averageMarkInTheSubject}`);
+      return averageMarkInTheSubject;    
+    }
+  }
+  
+  getAverage() {
+    let count = 0;
+    let sum = 0;
+    for(let subject in this.marks) {
+      sum += this.getAverageBySubject(subject);
+      count++;
+    }
+    if(count > 0) {
+      let average = sum/count.toFixed(2);
+      console.log(`Средний балл по всем предметам: ${average}`);
+      return average;
+    } else {
+      console.log("Нет оценок");
+      return null;
+    }
+  }
+  
+  exclude(reason) {
+    if(this.subject !== undefined) { 
+      delete this.subject;
+    }
+    if(this.marks !== undefined) { 
+      delete this.marks;
+    }
+    this.excluded = reason;
+  }
+}
+
+
+
+const student = new Student('Олег Никифоров');
+student.addGrade('algebra',5);
+student.addGrade('algebra',5);
+student.addGrade('geometry',5);
+student.addGrade('geometry',4);
+student.addGrade('geometry',6); // "Ошибка, оценка должна быть числом от 1 до 5"
+student.getAverageBySubject('geometry'); // Средний балл по предмету geometry 4.5
+student.getAverageBySubject('biology'); // Несуществующий предмет
+student.getAverage(); // Средний балл по всем предметам 4.75
+student.exclude('Исключен за попытку подделать оценки');
+
+console.log(student);
