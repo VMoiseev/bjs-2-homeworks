@@ -14,13 +14,13 @@ class PrintEditionItem {
     this.state = this.state * 1.5;
   }
 
-  set state(number) {
-    if(number < 0) {
-        this._state = 0;
-    } else if(number > 0) {
+  set state(newState) {
+    if(newState < 0) {
+      this._state = 0;
+    } else if(newState > 100) {
         this._state = 100;
     } else {
-        this._state = state;
+        this._state = newState;
     }
   }
 
@@ -115,12 +115,12 @@ class Library {
   }
 
   giveBookByName(bookName) {
-    for (let key of this.books) {
-      if (bookName === key.name) {
-        this.books.splice(key.indexOf, 1);
-        return key;
+    for (const givenBook in this.books) {
+      if (this.books[givenBook].name === bookName) {
+        this.books.splice(givenBook, 1);
+        return givenBook;
       } 
-    }
+    } 
     return null;
   }
 }
